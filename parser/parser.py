@@ -5,6 +5,7 @@ from typing import List
 from networking.fetch import FetchResult
 from urllib.parse import urlparse
 from typing import List
+from tqdm import tqdm
 
 @dataclass
 class ParsedPage:
@@ -16,7 +17,7 @@ class ParsedPage:
 
 def parse_html(fetch_result: FetchResult, iscasesensitive: bool = False) -> ParsedPage:
     soup = BeautifulSoup(fetch_result.content, 'lxml')
-    for tag in soup(['script', 'style']):
+    for tag in tqdm(soup(['script', 'style']), desc="Removing tags", ):
         tag.extract()
     
     text = soup.get_text(separator=" ", strip=True)
