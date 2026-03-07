@@ -14,7 +14,7 @@ class ParsedPage:
     text: str
     scripts: List[str]
 
-def parse_html(fetch_result: FetchResult) -> ParsedPage:
+def parse_html(fetch_result: FetchResult, iscasesensitive: bool) -> ParsedPage:
     soup = BeautifulSoup(fetch_result.content, 'lxml')
     for tag in soup(['script', 'style']):
         tag.extract()
@@ -32,7 +32,7 @@ def parse_html(fetch_result: FetchResult) -> ParsedPage:
     return ParsedPage(
         subdomain="/" if urlparse(fetch_result.url).path == "" else urlparse(fetch_result.url).path,
         url=fetch_result.url,
-        text=text,
-        links=links,
-        scripts=scripts
+        text=text if iscasesensitive else text.lower(),
+        links=links if iscasesensitive else [link.lower() for link in links],
+        scripts=scripts if iscasesensitive else [script.lower() for script in scripts]
     )
