@@ -2,6 +2,7 @@ import typer
 import asyncio
 from networking import fetch
 from parser.parser import parse_html
+from keyword_utils.keyword_scanner import find_keyword
 
 app = typer.Typer()
 
@@ -12,9 +13,7 @@ def run(url: str = None, keyword: str = None):
 async def _run(u: str = None, keyword: str = None):
     fetch_result = await fetch.fetch(u)
     parsed_result = parse_html(fetch_result)
-    print("URL:", parsed_result.url)
-    print("Subdomain:", parsed_result.subdomain)
-    print("Content: ", parsed_result.text)
+    find_keyword(parsed_result, keyword)
 
 
 
