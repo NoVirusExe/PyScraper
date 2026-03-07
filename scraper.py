@@ -7,12 +7,14 @@ from keyword_utils.keyword_scanner import find_keyword
 app = typer.Typer()
 
 @app.command()
-def run(url: str = None, keyword: str = None):
-    asyncio.run(_run(url, keyword))
+def run(url: str = None, keyword: str = None, casesensitive: bool = False):
+    print(casesensitive)
+    asyncio.run(_run(url, keyword, casesensitive=False))
 
-async def _run(u: str = None, keyword: str = None, iscasesensitive: bool = False):
+async def _run(u: str = None, keyword: str = None, casesensitive: bool = False):
+    if not casesensitive: keyword = keyword.lower()
     fetch_result = await fetch.fetch(u)
-    parsed_result = parse_html(fetch_result)
+    parsed_result = parse_html(fetch_result, iscasesensitive=casesensitive)
     find_keyword(parsed_result, keyword)
 
 

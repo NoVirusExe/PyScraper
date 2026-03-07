@@ -14,7 +14,7 @@ class ParsedPage:
     text: str
     scripts: List[str]
 
-def parse_html(fetch_result: FetchResult, iscasesensitive: bool) -> ParsedPage:
+def parse_html(fetch_result: FetchResult, iscasesensitive: bool = False) -> ParsedPage:
     soup = BeautifulSoup(fetch_result.content, 'lxml')
     for tag in soup(['script', 'style']):
         tag.extract()
