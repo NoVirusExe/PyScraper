@@ -3,6 +3,8 @@ from .client import create_client
 from dataclasses import dataclass
 from typing import Optional
 
+client = create_client()
+
 @dataclass
 class FetchResult:
     url: str
@@ -11,7 +13,6 @@ class FetchResult:
     content_type: Optional[str]
 
 async def fetch(url: str)-> FetchResult:
-    client = create_client()
     response = await client.get(url)
 
     return FetchResult(

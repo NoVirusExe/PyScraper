@@ -17,7 +17,7 @@ class ParsedPage:
 
 def parse_html(fetch_result: FetchResult, iscasesensitive: bool = False) -> ParsedPage:
     soup = BeautifulSoup(fetch_result.content, 'lxml')
-    for tag in tqdm(soup(['script', 'style']), desc="Removing tags", ):
+    for tag in soup(['script', 'style']):
         tag.extract()
     
     text = soup.get_text(separator=" ", strip=True)

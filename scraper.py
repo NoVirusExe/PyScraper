@@ -4,6 +4,7 @@ from tqdm import tqdm
 from networking import fetch
 from parser.parser import parse_html
 from keyword_utils.keyword_scanner import find_keyword
+from discovery.base import find_dirs
 
 banner = r"""
  ________  ___    ___      ________  ________  ________  ________  ________  _______   ________     
@@ -30,12 +31,17 @@ async def _run(u: str = None, keyword: str = None, casesensitive: bool = False):
     print("--------------------------------------------------------")
     print()
     if not casesensitive: keyword = keyword.lower()
-    fetch_result = await fetch.fetch(u)
-    parsed_result = parse_html(fetch_result, iscasesensitive=casesensitive)
-    print()
-    find_keyword(parsed_result, keyword)
 
+    urls = await find_dirs(u)
 
+    urlcounter = 0
+
+    for url in urls:
+        urlcounter += 1
+        response = await fetch.fetch(url)
+        find_keyword(parse_html(response), keyword, urlcounter)
+
+    print("--------------------------------------------------------")
 
 if __name__ == "__main__":
     app()
