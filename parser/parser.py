@@ -1,4 +1,5 @@
 import lxml
+from .manage_urls import scanned, urls
 from bs4 import BeautifulSoup
 from dataclasses import dataclass
 from typing import List
@@ -15,7 +16,7 @@ class ParsedPage:
     text: str
     scripts: List[str]
 
-def parse_html(fetch_result: FetchResult, iscasesensitive: bool = False) -> ParsedPage:
+def parse_html(fetch_result: FetchResult, iscasesensitive: bool = False, crawl: bool = False) -> ParsedPage:
     soup = BeautifulSoup(fetch_result.content, 'lxml')
     for tag in soup(['script', 'style']):
         tag.extract()
@@ -29,6 +30,22 @@ def parse_html(fetch_result: FetchResult, iscasesensitive: bool = False) -> Pars
     scripts = []
     for script in soup.find_all('script', src=True):
         scripts.append(script['src'])
+
+    if crawl:
+        for url in scripts:
+            if url not in urls and url not in scanned:
+                urls.append(url)
+                print("--------------------------------------------------------")
+                print(f"Added Script: {url}")
+
+    if crawl:
+        for link in links:
+            if link.startswith(fetch_result.url):
+                if link not in urls and link not in scanned:
+                    urls.append(link)
+                    print("--------------------------------------------------------")
+                    print(f"Added Link: {link}")
+
 
     return ParsedPage(
         subdomain="/" if urlparse(fetch_result.url).path == "" else urlparse(fetch_result.url).path,

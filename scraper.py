@@ -1,5 +1,6 @@
 import typer
 import asyncio
+from parser.manage_urls import urls, scanned
 from tqdm import tqdm
 from networking import fetch
 from parser.parser import parse_html
@@ -22,26 +23,28 @@ Created by NoVirusExe
 app = typer.Typer()
 
 @app.command()
-def run(url: str = None, keyword: str = None, casesensitive: bool = False):
-    asyncio.run(_run(url, keyword, casesensitive=False))
+def run(url: str = None, keyword: str = None, casesensitive: bool = False, crawl: bool = False):
+    asyncio.run(_run(url, keyword, casesensitive=False, crawl=crawl))
 
-async def _run(u: str = None, keyword: str = None, casesensitive: bool = False):
+async def _run(u: str = None, keyword: str = None, casesensitive: bool = False, crawl: bool = False):
     print(banner)
     print()
-    print("--------------------------------------------------------")
-    print()
+    print("--------------------------------------------------------\n")
     if not casesensitive: keyword = keyword.lower()
 
     urls = await find_dirs(u)
 
     urlcounter = 0
 
-    for url in urls:
+    while urls:
+        scan_u = urls.pop(0)
         urlcounter += 1
-        response = await fetch.fetch(url)
-        find_keyword(parse_html(response), keyword, urlcounter)
+        response = await fetch.fetch(scan_u)
+        find_keyword(parse_html(response,casesensitive, crawl), keyword, urlcounter)
+        scanned.append(scan_u)
 
     print("--------------------------------------------------------")
+    print(f"Scanned {len(scanned)} URLs")
 
 if __name__ == "__main__":
     app()
