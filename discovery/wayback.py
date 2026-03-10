@@ -12,7 +12,6 @@ async def query_wayback(url):
 
                 if len(data) > 1:
                     urls = list({entry[0] for entry in data[1:]})
-                    print(f"Found {len(urls)} URLs")
                     return urls
                 
         except Exception as e:

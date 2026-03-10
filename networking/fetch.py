@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from typing import Optional
 
 client = create_client()
+sem = asyncio.Semaphore(100)
 
 @dataclass
 class FetchResult:
@@ -13,7 +14,8 @@ class FetchResult:
     content_type: Optional[str]
 
 async def fetch(url: str)-> FetchResult:
-    response = await client.get(url)
+    async with sem:
+        response = await client.get(url)
 
     return FetchResult(
         url=url,

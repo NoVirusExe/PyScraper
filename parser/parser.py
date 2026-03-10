@@ -7,6 +7,7 @@ from networking.fetch import FetchResult
 from urllib.parse import urlparse
 from typing import List
 from tqdm import tqdm
+from discovery.base import bad_endings
 
 @dataclass
 class ParsedPage:
@@ -33,7 +34,7 @@ def parse_html(fetch_result: FetchResult, iscasesensitive: bool = False, crawl: 
 
     if crawl:
         for url in scripts:
-            if url not in urls and url not in scanned:
+            if url not in urls and url not in scanned and not url.endswith(tuple(bad_endings)):
                 urls.append(url)
                 print("--------------------------------------------------------")
                 print(f"Added Script: {url}")
@@ -41,7 +42,7 @@ def parse_html(fetch_result: FetchResult, iscasesensitive: bool = False, crawl: 
     if crawl:
         for link in links:
             if link.startswith(fetch_result.url):
-                if link not in urls and link not in scanned:
+                if link not in urls and link not in scanned and not link.endswith(tuple(bad_endings)):
                     urls.append(link)
                     print("--------------------------------------------------------")
                     print(f"Added Link: {link}")

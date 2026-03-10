@@ -10,6 +10,6 @@ def create_client() -> httpx.AsyncClient:
 
     return httpx.AsyncClient(
         timeout=DEFAULT_TIMEOUT,
-        follow_redirects=True,
+        follow_redirects=False,
         limits=limits
     )
