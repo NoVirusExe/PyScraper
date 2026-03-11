@@ -28,18 +28,18 @@ urlcounter = 0
 
 async def worker(queue, keyword, casesensitive, crawl):
     global urlcounter
-
     while True:
         url = await queue.get()
-
-        if url in visited:
-            queue.task_done()
-            continue
-
-        visited.add(url)
-        urlcounter += 1
-
         try:
+            if url is None:
+                break
+
+            if url in visited:
+                continue
+
+            visited.add(url)
+            urlcounter += 1
+
             response = await fetch.fetch(url)
             parsed, discovered_urls = parse_html(response, casesensitive, crawl)
             find_keyword(parsed, keyword, urlcounter)
@@ -48,10 +48,9 @@ async def worker(queue, keyword, casesensitive, crawl):
                 if new_url not in visited:
                     await queue.put(new_url)
         except Exception as e:
-            print(f"Error fetching {url}: {e}")
-
-        queue.task_done()
-
+            continue
+        finally:
+            queue.task_done()
 
 async def scan(start_urls, keyword, casesensitive, crawl):
     print("--------------------------------------------------------")
@@ -64,14 +63,15 @@ async def scan(start_urls, keyword, casesensitive, crawl):
 
     workers = []
 
-    for _ in range(100):
+    for i in range(100):
         task = asyncio.create_task(worker(queue, keyword, casesensitive, crawl))
         workers.append(task)
 
     await queue.join()
 
-    for task in workers:
-        task.cancel()
+    for i in range(100):
+        await queue.put(None)
+    await asyncio.gather(*workers)
 
 
 @app.command()
