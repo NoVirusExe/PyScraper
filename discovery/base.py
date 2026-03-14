@@ -1,7 +1,7 @@
 from discovery.wayback import query_wayback
 from discovery.common_crawl import query_common_crawl
 
-bad_endings = ['.jpg', '.jpeg', '.png', '.gif', '.svg', '.ico', '.woff', '.woff2', '.ttf', '.eot', '.otf', '.pdf', '.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx', '.zip', '.rar', '.7z', '.tar', '.gz', '.mp3', '.mp4', '.avi', '.mkv', '.flv', '.mp3', '.mp4', '.avi', '.mkv', '.flv', '.exe', '.dll', '.sys', '.bin', '.iso', '.img', '.dmg',]
+bad_endings = ['.jpg', '.jpeg', '.png', '.gif', '.svg', '.ico', '.woff', '.woff2', '.ttf', '.eot', '.otf', '.pdf', '.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx', '.zip', '.rar', '.7z', '.tar', '.gz', '.mp3', '.mp4', '.avi', '.mkv', '.flv', '.mp3', '.mp4', '.avi', '.mkv', '.flv', '.exe', '.dll', '.sys', '.bin', '.iso', '.img', '.dmg','xml,']
 
 
 

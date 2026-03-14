@@ -6,6 +6,7 @@ from discovery.base import find_dirs
 from keyword_utils.keyword_scanner import find_keyword
 from networking import fetch
 from parser.parser import parse_html
+from datetime import datetime
 
 banner = r"""
  ________  ___    ___      ________  ________  ________  ________  ________  _______   ________     
@@ -45,8 +46,10 @@ async def worker(queue, keyword, casesensitive, crawl):
             find_keyword(parsed, keyword, urlcounter)
 
             for new_url in discovered_urls:
-                if new_url not in visited:
+                if new_url not in visited and new_url not in queue:
                     await queue.put(new_url)
+                    print("--------------------------------------------------------")
+                    print(f"Discovered: {new_url}")
         except Exception as e:
             continue
         finally:
@@ -84,7 +87,10 @@ async def _run(u: str = None, keyword: str = None, casesensitive: bool = False, 
 
     print(banner)
     print()
-    print("--------------------------------------------------------\n")
+    print("--------------------------------------------------------")
+    print(f"Started at: {datetime.now().strftime('%H:%M:%S')}")
+    print("--------------------------------------------------------")
+
 
     if not casesensitive:
         keyword = keyword.lower()

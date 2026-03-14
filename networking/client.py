@@ -1,6 +1,6 @@
 import httpx
 
-DEFAULT_TIMEOUT = 10
+DEFAULT_TIMEOUT = 120
 
 def create_client() -> httpx.AsyncClient:
     limits = httpx.Limits(
