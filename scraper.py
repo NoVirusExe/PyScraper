@@ -7,6 +7,8 @@ from keyword_utils.keyword_scanner import find_keyword
 from networking import fetch
 from parser.parser import parse_html
 from datetime import datetime
+from progress_bar.bar import Progress_Bar
+from manage_data import queue
 
 banner = r"""
  ________  ___    ___      ________  ________  ________  ________  ________  _______   ________     
@@ -27,7 +29,7 @@ visited = set()
 urlcounter = 0
 
 
-async def worker(queue, keyword, casesensitive, crawl):
+async def worker(queue, keyword, casesensitive, crawl, bar: Progress_Bar):
     global urlcounter
     while True:
         url = await queue.get()
@@ -40,6 +42,7 @@ async def worker(queue, keyword, casesensitive, crawl):
 
             visited.add(url)
             urlcounter += 1
+            bar.advance()
 
             response = await fetch.fetch(url)
             parsed, discovered_urls = parse_html(response, casesensitive, crawl)
@@ -51,30 +54,31 @@ async def worker(queue, keyword, casesensitive, crawl):
                     print("--------------------------------------------------------")
                     print(f"Discovered: {new_url}")
         except Exception as e:
+            print(f"Error processing {url}: {e}")
+        except asyncio.TimeoutError:
             continue
         finally:
             queue.task_done()
 
 async def scan(start_urls, keyword, casesensitive, crawl):
     print("--------------------------------------------------------")
-    print("Scanning...")
 
-    queue = asyncio.Queue()
 
     for url in start_urls:
         await queue.put(url)
 
     workers = []
 
-    for i in range(100):
-        task = asyncio.create_task(worker(queue, keyword, casesensitive, crawl))
-        workers.append(task)
+    with Progress_Bar() as bar:
+        for i in range(100):
+            task = asyncio.create_task(worker(queue, keyword, casesensitive, crawl, bar))
+            workers.append(task)
 
-    await queue.join()
+        await queue.join()
 
-    for i in range(100):
-        await queue.put(None)
-    await asyncio.gather(*workers)
+        for i in range(100):
+            await queue.put(None)
+        await asyncio.gather(*workers)
 
 
 @app.command()

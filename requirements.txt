@@ -3,5 +3,5 @@ beautifulsoup4
 lxml
 typer
 rich
-tqdm
+rich
 python-dotenv
