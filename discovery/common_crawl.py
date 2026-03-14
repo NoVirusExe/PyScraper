@@ -8,7 +8,7 @@ async def query_common_crawl(url):
     async with httpx.AsyncClient(timeout=60) as client:
         try:
             response = await client.get(api_url)
-            if response.status_code == 200 and len(response.text) > 1:
+            if response.status_code == 200:
                 urls = []
 
                 for line in response.text.splitlines():

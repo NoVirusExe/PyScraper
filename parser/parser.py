@@ -20,7 +20,7 @@ def parse_html(
     iscasesensitive: bool = False,
     crawl: bool = False,
 ) -> tuple[ParsedPage, list[str]]:
-    soup = BeautifulSoup(fetch_result.content, 'lxml', features='xml')
+    soup = BeautifulSoup(fetch_result.content, features='xml')
     for tag in soup(['script', 'style']):
         tag.extract()
     
