@@ -49,10 +49,8 @@ async def worker(queue, keyword, casesensitive, crawl, bar: Progress_Bar):
             find_keyword(parsed, keyword, urlcounter)
 
             for new_url in discovered_urls:
-                if new_url not in visited and new_url not in queue:
+                if new_url not in visited:
                     await queue.put(new_url)
-                    print("--------------------------------------------------------")
-                    print(f"Discovered: {new_url}")
         except Exception as e:
             print(f"Error processing {url}: {e}")
         except asyncio.TimeoutError:
@@ -61,8 +59,6 @@ async def worker(queue, keyword, casesensitive, crawl, bar: Progress_Bar):
             queue.task_done()
 
 async def scan(start_urls, keyword, casesensitive, crawl):
-    print("--------------------------------------------------------")
-
 
     for url in start_urls:
         await queue.put(url)
