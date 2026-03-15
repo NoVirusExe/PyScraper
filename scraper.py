@@ -58,7 +58,7 @@ async def worker(queue, keyword, casesensitive, crawl, bar: Progress_Bar):
         finally:
             queue.task_done()
 
-async def scan(start_urls, keyword, casesensitive, crawl):
+async def scan(start_urls, keyword, casesensitive, crawl, threads):
 
     for url in start_urls:
         await queue.put(url)
@@ -66,23 +66,23 @@ async def scan(start_urls, keyword, casesensitive, crawl):
     workers = []
 
     with Progress_Bar() as bar:
-        for i in range(100):
+        for i in range(threads):
             task = asyncio.create_task(worker(queue, keyword, casesensitive, crawl, bar))
             workers.append(task)
 
         await queue.join()
 
-        for i in range(100):
+        for i in range(threads):
             await queue.put(None)
         await asyncio.gather(*workers)
 
 
 @app.command()
-def run(url: str = None, keyword: str = None, casesensitive: bool = False, crawl: bool = False):
-    asyncio.run(_run(url, keyword, casesensitive=casesensitive, crawl=crawl))
+def run(url: str = None, keyword: str = None, casesensitive: bool = False, crawl: bool = False, threads: int = 100):
+    asyncio.run(_run(url, keyword, casesensitive=casesensitive, crawl=crawl, threads=threads))
 
 
-async def _run(u: str = None, keyword: str = None, casesensitive: bool = False, crawl: bool = False):
+async def _run(u: str = None, keyword: str = None, casesensitive: bool = False, crawl: bool = False, threads: int = 100):
     global visited, urlcounter
 
     print(banner)
@@ -99,7 +99,7 @@ async def _run(u: str = None, keyword: str = None, casesensitive: bool = False, 
     urlcounter = 0
 
     start_urls = await find_dirs(u)
-    await scan(start_urls, keyword, casesensitive, crawl)
+    await scan(start_urls, keyword, casesensitive, crawl, threads)
 
     print("--------------------------------------------------------")
     print(f"Scanned {len(visited)} URLs")
