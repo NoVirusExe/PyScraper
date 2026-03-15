@@ -14,7 +14,7 @@ async def find_dirs(url):
     print("Merging and filtering URLs...")
 
     for url in urls:
-        if url.endswith(tuple(bad_endings)):
+        if url.endswith(tuple(bad_endings)) and '#' not in url:
             urls.remove(url)
     print(f"Found {len(urls)} URLs in total")
 

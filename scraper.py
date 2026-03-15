@@ -49,7 +49,7 @@ async def worker(queue, keyword, casesensitive, crawl, bar: Progress_Bar):
             find_keyword(parsed, keyword, urlcounter)
 
             for new_url in discovered_urls:
-                if new_url not in visited:
+                if new_url not in visited and '#' not in new_url:
                     await queue.put(new_url)
         except Exception as e:
             print(f"Error processing {url}: {e}")
