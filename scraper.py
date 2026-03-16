@@ -79,8 +79,10 @@ async def scan(start_urls, keyword, casesensitive, crawl, threads):
 
 @app.command()
 def run(url: str = None, keyword: str = None, casesensitive: bool = False, crawl: bool = False, threads: int = 100):
-    asyncio.run(_run(url, keyword, casesensitive=casesensitive, crawl=crawl, threads=threads))
-
+    try:
+        asyncio.run(_run(url, keyword, casesensitive=casesensitive, crawl=crawl, threads=threads))
+    except KeyboardInterrupt:
+        print(" Scan interrupted by user.")
 
 async def _run(u: str = None, keyword: str = None, casesensitive: bool = False, crawl: bool = False, threads: int = 100):
     global visited, urlcounter
