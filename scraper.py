@@ -78,7 +78,7 @@ async def scan(start_urls, keyword, casesensitive, crawl, threads):
 
 
 @app.command()
-def run(url: str = None, keyword: str = None, casesensitive: bool = False, crawl: bool = False, threads: int = 100):
+def run(url: str, keyword: str, casesensitive: bool = False, crawl: bool = False, threads: int = 100):
     try:
         asyncio.run(_run(url, keyword, casesensitive=casesensitive, crawl=crawl, threads=threads))
     except KeyboardInterrupt:
