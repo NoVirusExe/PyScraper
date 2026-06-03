@@ -17,6 +17,12 @@ async def query_common_crawl(url):
                         urls.append(entry["url"])
                 print(f"Found {len(urls)} URLs in Common Crawl")
                 return urls
+            elif response.status_code == 429:
+                print("Rate limited by Common Crawl. Please try again later.")
+            elif response.status_code == 504:
+                print("Common Crawl is currently unavailable (504 Gateway Timeout). Please try again later.")
+            elif response.status_code == 503:
+                print("Common Crawl is currently unavailable (503 Service Unavailable). Please try again later")
                 
         except Exception as e:
             print(f"Error querying Common Crawl: {e}")
