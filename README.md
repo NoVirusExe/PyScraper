@@ -30,25 +30,25 @@ pip install -r requirements.txt
 Basic scan:
 
 ```bash
-python scraper.py run https://example.com api
+python scraper.py https://example.com api
 ```
 
 Case-sensitive search:
 
 ```bash
-python scraper.py run https://example.com API --casesensitive
+python scraper.py https://example.com API --casesensitive
 ```
 
 Enable crawling:
 
 ```bash
-python scraper.py run https://example.com api --crawl
+python scraper.py https://example.com api --crawl
 ```
 
 Increase worker count:
 
 ```bash
-python scraper.py run https://example.com api --threads 200
+python scraper.py https://example.com api --threads 200
 ```
 
 ---
