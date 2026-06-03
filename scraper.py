@@ -51,10 +51,11 @@ async def worker(queue, keyword, casesensitive, crawl, bar: Progress_Bar):
             for new_url in discovered_urls:
                 if new_url not in visited and '#' not in new_url:
                     await queue.put(new_url)
-        except Exception as e:
-            print(f"Error processing {url}: {e}")
         except asyncio.TimeoutError:
-            continue
+            pass
+        except Exception as e:
+            print("--------------------------------------------------------")
+            print(f"Error processing {url}: {e}")
         finally:
             queue.task_done()
 

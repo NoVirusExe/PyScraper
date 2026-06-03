@@ -7,15 +7,22 @@ bad_endings = ['.jpg', '.jpeg', '.png', '.gif', '.svg', '.ico', '.woff', '.woff2
 
 async def find_dirs(url):
     urls = []
-    urls = urls + await query_wayback(url)
+    w_urls = await query_wayback(url)
+    if w_urls:
+        urls = urls + w_urls
     print("--------------------------------------------------------")
-    urls = urls + await query_common_crawl(url)
+    c_urls = await query_common_crawl(url)
+    if c_urls:
+        urls = urls + c_urls
     print("--------------------------------------------------------")
     print("Merging and filtering URLs...")
 
     for url in urls:
         if url.endswith(tuple(bad_endings)) and '#' not in url:
             urls.remove(url)
+        if url.endswith('/'):
+            url = url.rstrip('/')
+    urls = list(set(urls))
     print(f"Found {len(urls)} URLs in total")
 
-    return list(set(urls))
+    return urls
