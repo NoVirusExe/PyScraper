@@ -29,7 +29,7 @@ visited = set()
 urlcounter = 0
 
 
-async def worker(queue, keyword, casesensitive, crawl, bar: Progress_Bar):
+async def worker(domain, queue, keyword, casesensitive, crawl, bar: Progress_Bar):
     global urlcounter
     while True:
         url = await queue.get()
@@ -49,7 +49,7 @@ async def worker(queue, keyword, casesensitive, crawl, bar: Progress_Bar):
             find_keyword(parsed, keyword, urlcounter)
 
             for new_url in discovered_urls:
-                if new_url not in visited and '#' not in new_url:
+                if new_url not in visited and '#' not in new_url and new_url.contains(domain):  
                     await queue.put(new_url)
         except asyncio.TimeoutError:
             pass
@@ -59,7 +59,7 @@ async def worker(queue, keyword, casesensitive, crawl, bar: Progress_Bar):
         finally:
             queue.task_done()
 
-async def scan(start_urls, keyword, casesensitive, crawl, threads):
+async def scan(domain, start_urls, keyword, casesensitive, crawl, threads):
 
     for url in start_urls:
         await queue.put(url)
@@ -68,7 +68,7 @@ async def scan(start_urls, keyword, casesensitive, crawl, threads):
 
     with Progress_Bar() as bar:
         for i in range(threads):
-            task = asyncio.create_task(worker(queue, keyword, casesensitive, crawl, bar))
+            task = asyncio.create_task(worker(domain, queue, keyword, casesensitive, crawl, bar))
             workers.append(task)
 
         await queue.join()
@@ -102,7 +102,7 @@ async def _run(u: str = None, keyword: str = None, casesensitive: bool = False, 
     urlcounter = 0
 
     start_urls = await find_dirs(u)
-    await scan(start_urls, keyword, casesensitive, crawl, threads)
+    await scan(u, start_urls, keyword, casesensitive, crawl, threads)
 
     print("--------------------------------------------------------")
     print(f"Scanned {len(visited)} URLs")
