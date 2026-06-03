@@ -2,7 +2,7 @@ import httpx
 import asyncio
 
 async def query_wayback(url):
-    api_url = f"http://web.archive.org/cdx/search/cdx?url={url}/*&output=json&fl=original&collapse=urlkey"
+    api_url = f"https://web.archive.org/cdx/search/cdx?url={url}/*&output=json&fl=original&collapse=urlkey"
     print("Querying Wayback machine...")
     async with httpx.AsyncClient(timeout=60) as client:
         try:
