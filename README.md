@@ -4,6 +4,8 @@ A fast asynchronous keyword discovery and website reconnaissance tool.
 
 PyScraper discovers URLs from public sources such as the Internet Archive (Wayback Machine) and Common Crawl, fetches pages concurrently, extracts content, and searches for user-defined keywords.
 
+This is my first bigger Project so feel free to report bugs or issues.
+
 ---
 
 ## Installation
