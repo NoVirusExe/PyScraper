@@ -13,7 +13,7 @@ This is my first bigger Project so feel free to report bugs or issues.
 Clone the repository:
 
 ```bash
-git clone https://github.com/yourusername/pyscraper.git
+git clone https://github.com/NoVirusExe/PyScraper.git
 cd pyscraper
 ```
 
